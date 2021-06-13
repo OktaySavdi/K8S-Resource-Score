@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: web
-  name: web
+    app: app
+  name: app
 spec:
   replicas: 2
   strategy:
@@ -13,12 +13,12 @@ spec:
       maxSurge: '25%'
   selector:
     matchLabels:
-      app: web
+      app: app
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: web
+        app: app
     spec:
       dnsPolicy: ClusterFirst
       containers:
