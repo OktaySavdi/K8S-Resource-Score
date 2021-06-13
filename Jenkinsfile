@@ -34,7 +34,7 @@ pipeline {
                             				else
                             				    oc new-project ${NAMESPACE}
                             				fi
-                            				if [[ $score < '80' ]];then
+                            				if [[ $score > '80' ]];then
                             				       echo "Your YAML file has the following missing."
                             				       kube-score score * --output-format ci | grep -vE "NetworkPolicy|podAntiAffinity|PodDisruptionBudget"
                             				else                              
