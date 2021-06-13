@@ -15,7 +15,6 @@ spec:
   selector:
     matchLabels:
       app: web
-  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -28,6 +27,7 @@ spec:
       containers:
       - image: redis
         name: redis
+        imagePullPolicy: Always
         resources:
           limits:
             cpu: "1"
