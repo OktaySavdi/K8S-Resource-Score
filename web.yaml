@@ -25,6 +25,8 @@ spec:
       - image: nginx:1.16
         name: nginx
         imagePullPolicy: Always
+      securityContext:  
+        runAsNonRoot: true
         resources:
           limits:
             cpu: "1"
