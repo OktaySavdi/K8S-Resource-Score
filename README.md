@@ -12,9 +12,6 @@ kube-score score goodapp/* --output-format ci | grep -vE "NetworkPolicy|podAntiA
 ```ruby
 wget https://github.com/zegl/kube-score/releases/download/v1.11.0/kube-score_1.11.0_linux_amd64.tar.gz
 tar -xvf kube-score_1.11.0_linux_amd64.tar.gz
-cp kube-score /usr/bin/
-cp kube-score /usr/local/sbin/
-cp kube-score /usr/local/bin/
 ```
 
 ### Polaris
@@ -28,7 +25,14 @@ polaris audit --config config.yaml --audit-path yaml/
 ```ruby
 wget https://github.com/FairwindsOps/polaris/releases/download/4.0.2/polaris_4.0.2_linux_amd64.tar.gz
 tar -xvf polaris_4.0.2_linux_amd64.tar.gz
-cp polaris /usr/bin/
-cp polaris /usr/local/sbin/
-cp polaris /usr/local/bin/
 ```
+
+### ArgoCD
+```ruby
+VERSION=$(curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64
+chmod +x /usr/local/bin/argocd
+```
+
+
+
