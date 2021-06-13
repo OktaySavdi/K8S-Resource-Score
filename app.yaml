@@ -21,9 +21,6 @@ spec:
         app: web
     spec:
       dnsPolicy: ClusterFirst
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 3000
       containers:
       - image: redis
         name: redis
