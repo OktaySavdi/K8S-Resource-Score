@@ -42,7 +42,7 @@ spec:
             - /tmp/healthy
           initialDelaySeconds: 5
           periodSeconds: 5
-        livenessProbe:
+        readinessProbe:
           exec:
             command:
             - echo
