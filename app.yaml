@@ -21,12 +21,12 @@ spec:
         app: app
     spec:
       dnsPolicy: ClusterFirst
+      securityContext:  
+        runAsNonRoot: true
       containers:
       - image: redis
         name: redis
         imagePullPolicy: Always
-      securityContext:  
-        runAsNonRoot: true
         resources:
           limits:
             cpu: "1"
