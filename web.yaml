@@ -21,12 +21,12 @@ spec:
         app: web
     spec:
       dnsPolicy: ClusterFirst
+      securityContext:  
+        runAsNonRoot: true
       containers:
       - image: nginx:1.16
         name: nginx
         imagePullPolicy: Always
-      securityContext:  
-        runAsNonRoot: true
         resources:
           limits:
             cpu: "1"
