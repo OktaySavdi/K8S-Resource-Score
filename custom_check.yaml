@@ -1,0 +1,30 @@
+checks:
+  # reliability
+  multipleReplicasForDeployment: warning
+  priorityClassNotSet: ignore
+  tagNotSpecified: danger
+  pullPolicyNotAlways: danger
+  readinessProbeMissing: danger
+  livenessProbeMissing: danger
+  metadataAndNameMismatched: ignore
+  pdbDisruptionsIsZero: ignore
+  missingPodDisruptionBudget: ignore
+
+  # efficiency
+  cpuRequestsMissing: danger
+  cpuLimitsMissing: danger
+  memoryRequestsMissing: danger
+  memoryLimitsMissing: danger
+  # security
+  hostIPCSet: ignore
+  hostPIDSet: ignore
+  notReadOnlyRootFilesystem: ignore
+  privilegeEscalationAllowed: ignore
+  runAsRootAllowed: ignore
+  runAsPrivileged: ignore
+  dangerousCapabilities: ignore
+  insecureCapabilities: ignore
+  hostNetworkSet: ignore
+  hostPortSet: ignore
+  tlsSettingsMissing: ignore
+  
