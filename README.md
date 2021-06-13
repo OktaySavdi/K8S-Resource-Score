@@ -44,7 +44,7 @@ checks:
   tlsSettingsMissing: ignore
 EOF
 ```
-argocd, kubes-score and polaris are downloaded and left to the paths jenkins sees
+`argocd`, `kubes-score` and `polaris` are downloaded and left to the paths `jenkins` sees
 ```bash
 wget https://github.com/zegl/kube-score/releases/download/v1.11.0/kube-score_1.11.0_linux_amd64.tar.gz
 tar -xvf kube-score_1.11.0_linux_amd64.tar.gz
@@ -80,7 +80,7 @@ if yaml file is over 80
 ![image](https://user-images.githubusercontent.com/3519706/121813978-4c682400-cc77-11eb-8949-10ae08732650.png)
 
 ### kube-score
-```bash
+```ruby
 kube-score score base-valid.yaml
 kube-score score yaml/*
 kube-score score yaml/* --output-format ci
