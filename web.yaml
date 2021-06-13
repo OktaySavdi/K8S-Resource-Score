@@ -7,10 +7,14 @@ metadata:
   name: web
 spec:
   replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   selector:
     matchLabels:
       app: web
-  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -21,8 +25,9 @@ spec:
         runAsUser: 1000
         runAsGroup: 3000
       containers:
-      - image: nginx
+      - image: nginx:1.16
         name: nginx
+        imagePullPolicy: Always
         resources:
           limits:
             cpu: "1"
