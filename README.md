@@ -6,6 +6,7 @@ Requirments:
  - Git
  - Jenkins
  - Openshift
+ - Kube-Score and Polaris
 
 A common file is created and the following config is added there
 ```bash
