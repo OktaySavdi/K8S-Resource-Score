@@ -32,7 +32,7 @@ pipeline {
 					withCredentials([string(credentialsId: "ocp_creds${i}", variable: 'TOKEN')]) {
 						sh '''
                             echo "###### ${cluster} ######"
-							              oc login --token ${TOKEN} ${cluster} --insecure-skip-tls-verify=true
+			    oc login --token ${TOKEN} ${cluster} --insecure-skip-tls-verify=true
                             ARGOCD_SERVER_PASSWORD=$(oc get secret openshift-gitops-cluster -n openshift-gitops -o jsonpath='{.data.admin\\.password}' | base64 -d)
                             ARGOCD_ROUTE=$(oc -n openshift-gitops get route openshift-gitops-server -n openshift-gitops -o jsonpath='{.spec.host}')
                             score=$(polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . --format score)										
