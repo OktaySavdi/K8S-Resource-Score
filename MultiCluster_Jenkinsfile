@@ -13,21 +13,21 @@ pipeline {
             steps {
                 script {
                     if (!params.NAMESPACE.isEmpty()) { 
-						            if (params.REPO.isEmpty()) { 
+			if (params.REPO.isEmpty()) { 
                             error('Repo Alani Boş') 
                         }
                     }
-					           else { error('Proje Alani Boş') }
+		     else { error('Proje Alani Boş') }
                 }
             }
         }
 		stage('action') {
 			steps {
 				script {
-				    def clusters = [ "https://api.mycluster1.mydomain:6443","https://api.mycluster2.mydomain:6443"]
-                  for (int i=1; i < 3; ++i) {
+				       def clusters = [ "https://api.mycluster1.mydomain:6443","https://api.mycluster2.mydomain:6443"]
+                                       for (int i=1; i < 3; ++i) {
                     
-                    def cluster = clusters[i]
+                                        def cluster = clusters[i]
 					git branch:"master", url: "${params.REPO}"
 					withCredentials([string(credentialsId: "ocp_creds${i}", variable: 'TOKEN')]) {
 						sh '''
@@ -36,7 +36,7 @@ pipeline {
                             ARGOCD_SERVER_PASSWORD=$(oc get secret openshift-gitops-cluster -n openshift-gitops -o jsonpath='{.data.admin\\.password}' | base64 -d)
                             ARGOCD_ROUTE=$(oc -n openshift-gitops get route openshift-gitops-server -n openshift-gitops -o jsonpath='{.spec.host}')
                             score=$(polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . --format score)										
-							              if [ $(oc get project "${NAMESPACE}" | wc -l) -gt 0 ]; then
+			    if [ $(oc get project "${NAMESPACE}" | wc -l) -gt 0 ]; then
                                 oc project $NAMESPACE
                             else
                               "Proje Bulunamadı"
@@ -55,10 +55,10 @@ pipeline {
                                 argocd app sync "${NAMESPACE}"
                             fi
 						'''
-					 }//cred
-          }//foreach
-				}//script
-				}//steps
+			            }//cred
+                                   }//foreach
+				 }//script
+			        }//steps
 			}//stage
 		}
 }
