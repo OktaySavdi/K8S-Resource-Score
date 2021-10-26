@@ -53,10 +53,10 @@ pipeline {
                                                exit 15
                                         else                              
                                             argocd --insecure --grpc-web login ${ARGOCD_ROUTE}:443 --username admin --password ${ARGOCD_SERVER_PASSWORD}
-                                            if [[ $(argocd app list | grep -c "${NAMESPACE}") -eq '0' ]];then
-                                                argocd app create "${NAMESPACE}" --repo "${REPO}" --path . --revision "master" --project default --dest-namespace "${NAMESPACE}" --dest-server https://kubernetes.default.svc --directory-recurse
+                                            if [[ $(argocd app list | grep -c "${project_name}") -eq '0' ]];then
+                                                argocd app create "${project_name}" --repo "${REPO}" --path . --revision "master" --project default --dest-namespace "${project_name}" --dest-server https://kubernetes.default.svc --directory-recurse
                                             fi
-                                            argocd app sync "${NAMESPACE}"
+                                            argocd app sync "${project_name}"
                                         fi
 			               '''
 				}//cred
