@@ -36,7 +36,8 @@ pipeline {
                             				fi
                             				if [[ $score -lt '80' ]];then
                             				       echo "Your YAML file has the following missing."
-                            				       kube-score score * --output-format ci | grep -vE "NetworkPolicy|podAntiAffinity|PodDisruptionBudget"
+							       polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . | grep -A 0 -B 8 false | grep -vE "Severity|Category|Details|true"
+                            				       #kube-score score * --output-format ci | grep -vE "NetworkPolicy|podAntiAffinity|PodDisruptionBudget"
                             				else                              
                             				    argocd --insecure --grpc-web login ${ARGOCD_ROUTE}:443 --username admin --password ${ARGOCD_SERVER_PASSWORD}
                             				    if [[ $(argocd app list | grep -c "${NAMESPACE}") -eq '0' ]];then
