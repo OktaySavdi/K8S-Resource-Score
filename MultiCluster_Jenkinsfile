@@ -49,7 +49,8 @@ pipeline {
             
                                         if [[ $score -lt '80' ]];then
                                                echo "Yaml dosyanızda aşağıdaki eksiklikler bulunmaktadır."
-                                               kube-score score * --output-format ci | grep -vE "NetworkPolicy|podAntiAffinity|PodDisruptionBudget"
+					       polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . | grep -A 0 -B 8 false | grep -vE "Severity|Category|Details|true"
+                                               #kube-score score * --output-format ci | grep -vE "NetworkPolicy|podAntiAffinity|PodDisruptionBudget"
                                                exit 15
                                         else                              
                                             argocd --insecure --grpc-web login ${ARGOCD_ROUTE}:443 --username admin --password ${ARGOCD_SERVER_PASSWORD}
