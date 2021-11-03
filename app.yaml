@@ -24,7 +24,7 @@ spec:
       securityContext:  
         runAsNonRoot: true
       containers:
-      - image: quay.io/oktaysavdi/probe:latest
+      - image: quay.io/oktaysavdi/istioproject@sha256:e92c62f3de5048b1583f5ede446005f64c3d7154fcd39ce7ab4765e490f3cdea
         name: project1
         imagePullPolicy: Always
         resources:
