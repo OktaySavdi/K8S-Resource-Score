@@ -24,7 +24,7 @@ spec:
       securityContext:  
         runAsNonRoot: true
       containers:
-      - image: quay.io/oktaysavdi/istioproject@sha256:e92c62f3de5048b1583f5ede446005f64c3d7154fcd39ce7ab4765e490f3cdea
+      - image: quay.io/oktaysavdi/probe@sha256:fa2598896bd57c11b04acd4c50509e69d9e691b01f7d5d49fada512177bdaee9
         name: project2
         imagePullPolicy: Always
         resources:
@@ -34,15 +34,17 @@ spec:
           requests:
             cpu: "0.5"
             memory: "100Mi"
-        livenessProbe:
-          httpGet:
-            path: /isto
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: /isto
-            port: 8080
-          initialDelaySeconds: 5
+            path: /health/ready
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        livenessProbe:
+          initialDelaySeconds: 2
           periodSeconds: 5
+          httpGet:
+            path: /health/live
+            port: 80
+            scheme: HTTP
