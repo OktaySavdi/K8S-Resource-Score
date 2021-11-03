@@ -39,16 +39,14 @@ spec:
             cpu: "0.5"
             memory: "100Mi"
         livenessProbe:
-          exec:
-            command:
-            - cat
-            - /tmp/healthy
+          httpGet:
+            path: /isto
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
         readinessProbe:
-          exec:
-            command:
-            - cat
-            - /tmp/healthy
+          httpGet:
+            path: /isto
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
