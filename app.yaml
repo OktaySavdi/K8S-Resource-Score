@@ -25,7 +25,7 @@ spec:
         runAsNonRoot: true
       containers:
       - image: quay.io/oktaysavdi/istioproject@sha256:070cf43b432e2c98a1747e1c19de25abf3ebf631b65434cc59f512c3de513581
-        name: redis
+        name: project2
         imagePullPolicy: Always
         args:
         - /bin/sh
