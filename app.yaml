@@ -24,7 +24,7 @@ spec:
       securityContext:  
         runAsNonRoot: true
       containers:
-      - image: quay.io/oktaysavdi/probe@sha256:fa2598896bd57c11b04acd4c50509e69d9e691b01f7d5d49fada512177bdaee9
+      - image: quay.io/oktaysavdi/probe:latest
         name: project1
         imagePullPolicy: Always
         resources:
