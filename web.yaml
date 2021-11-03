@@ -27,10 +27,6 @@ spec:
       - image: quay.io/oktaysavdi/istioproject@sha256:e92c62f3de5048b1583f5ede446005f64c3d7154fcd39ce7ab4765e490f3cdea
         name: project2
         imagePullPolicy: Always
-        args:
-        - /bin/sh
-        - -c
-        - touch /tmp/healthy
         resources:
           limits:
             cpu: "1"
@@ -39,16 +35,14 @@ spec:
             cpu: "0.5"
             memory: "100Mi"
         livenessProbe:
-          exec:
-            command:
-            - cat
-            - /tmp/healthy
+          httpGet:
+            path: /isto
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
         readinessProbe:
-          exec:
-            command:
-            - echo
-            - /tmp/healthy
+          httpGet:
+            path: /isto
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
