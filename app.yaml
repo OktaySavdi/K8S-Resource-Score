@@ -38,15 +38,17 @@ spec:
           requests:
             cpu: "0.5"
             memory: "100Mi"
-        livenessProbe:
-          httpGet:
-            path: /isto
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: /isto
-            port: 8080
-          initialDelaySeconds: 5
+            path: /health/ready
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 2
           periodSeconds: 5
