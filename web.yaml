@@ -24,8 +24,8 @@ spec:
       securityContext:  
         runAsNonRoot: true
       containers:
-      - image: nginx:1.16
-        name: nginx
+      - image: quay.io/oktaysavdi/istioproject@sha256:e92c62f3de5048b1583f5ede446005f64c3d7154fcd39ce7ab4765e490f3cdea
+        name: project2
         imagePullPolicy: Always
         args:
         - /bin/sh
