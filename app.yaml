@@ -24,7 +24,7 @@ spec:
       securityContext:  
         runAsNonRoot: true
       containers:
-      - image: redis@sha256:c2cbe8a592927bb74033f9c29b103ebc8e1ab3ed9598a9e937aaa2a723d5b8a7
+      - image: quay.io/oktaysavdi/istioproject@sha256:070cf43b432e2c98a1747e1c19de25abf3ebf631b65434cc59f512c3de513581
         name: redis
         imagePullPolicy: Always
         args:
