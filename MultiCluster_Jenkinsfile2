@@ -15,7 +15,7 @@ pipeline {
                     if (!params.NAMESPACE.isEmpty()) { 
 			if (params.REPO.isEmpty()) { 
                             
-                            error('epo Space is Empty') 
+                            error('repo Space is Empty') 
                         }
                     }
 		    else { error('Proje Space is Empty') }
