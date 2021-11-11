@@ -56,7 +56,7 @@ pipeline {
                        """
                        
                            if(score.toInteger() < 80){
-                                  println "Yaml dosyanızda aşağıdaki eksiklikler bulunmaktadır"
+                                  println "Your yaml file has the following deficiencies"
                                   sh "polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . | grep -A 0 -B 8 false | grep -vE \"Severity|Category|Details|true\" "
                                   //kube-score score * --output-format ci | grep -vE "NetworkPolicy|podAntiAffinity|PodDisruptionBudget"
                                   error("Please make the relevant changes in your Yaml file")
