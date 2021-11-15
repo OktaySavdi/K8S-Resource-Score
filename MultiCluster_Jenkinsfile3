@@ -45,10 +45,10 @@ pipeline {
                     else
                         error("Your DEPLOY environment is wrong, please check.")
                         
-					git branch: deploybranch, credentialsId: 'srv_gitops', url: "${repoUrl}"
+			git branch: deploybranch, credentialsId: 'srv_gitops', url: "${repoUrl}"
                      
-					withCredentials([string(credentialsId: "ocpserviceuser_creds${i}", variable: 'TOKEN')]) {
-					   withCredentials([usernamePassword(credentialsId: 'srv_gitops', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+			withCredentials([string(credentialsId: "ocpserviceuser_creds${i}", variable: 'TOKEN')]) {
+			withCredentials([usernamePassword(credentialsId: 'srv_gitops', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 					
                         sh "oc login --token ${TOKEN} ${cluster} --insecure-skip-tls-verify=true"
 						    
@@ -64,7 +64,7 @@ pipeline {
                             
                         sh """
                             									
-							if [ \$(oc get project "${project_name}" | wc -l) -gt 0 ]; then
+			    if [ \$(oc get project "${project_name}" | wc -l) -gt 0 ]; then
                                 oc project $project_name
                             else
                               \"Project Not Found\"
@@ -97,13 +97,12 @@ pipeline {
                                 }
                                 
                                 sh "argocd app sync ${project_name}"
-                            }
-						
-					    }//cred
-					}
-                  }//for
-				}//script
-			  }//steps
-		  }//stage
-		}
+                              }						
+	            }//cred
+		 }
+              }//for
+	  }//script
+	}//steps
+     }//stage
+  }
 }
