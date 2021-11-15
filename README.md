@@ -7,6 +7,7 @@ Requirments:
  - Jenkins
  - Openshift
  - Kube-Score and Polaris
+ - kubeval
 
 A common file is created and the following config is added there
 ```bash
