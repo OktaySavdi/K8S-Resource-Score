@@ -5,7 +5,7 @@ pipeline {
 	//Parameters
 	parameters {
 		string ( name: 'NAMESPACE', description: 'Enter the Project name to be installed' )
-        string ( name: 'REPO', description: 'Enter the repo name' )
+                string ( name: 'REPO', description: 'Enter the repo name' )
 	}
 
     environment { 
@@ -22,18 +22,17 @@ pipeline {
             steps {
                 script {
                     if (!params.NAMESPACE.isEmpty()) { 
-						if (params.REPO.isEmpty()) { 
-                            
+			if (params.REPO.isEmpty()) { 
                             error('repo Space is Empty') 
                         }
                     }
-					else { error('Proje Space is Empty') }
+			else { error('Proje Space is Empty') }
                 }
             }
         }
         stage('validate') {
             steps {
-				script {
+		script {
 
                         println "Environment is ${Ortam}"
                         if(Ortam == "DEV")
@@ -62,18 +61,18 @@ pipeline {
 
 		stage('action') {
 			steps {
-				script {
-				    def clusters = [
+			    script {
+		      def clusters = [
                         "https://api.mycluster1.mydomain:6443",
                         "https://api.mycluster2.mydomain:6443"
                         ]
                     for (int i=0; i < clusters.size(); ++i) {
                     def cluster = clusters[i]
                    
-					git branch: deploybranch, credentialsId: 'srv_gitops', url: "${repoUrl}"
+			git branch: deploybranch, credentialsId: 'srv_gitops', url: "${repoUrl}"
                      
-					withCredentials([string(credentialsId: "ocpserviceuser_creds${i}", variable: 'TOKEN')]) {
-					   withCredentials([usernamePassword(credentialsId: 'srv_gitops', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+			withCredentials([string(credentialsId: "ocpserviceuser_creds${i}", variable: 'TOKEN')]) {
+			withCredentials([usernamePassword(credentialsId: 'srv_gitops', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 					
                         sh "oc login --token ${TOKEN} ${cluster} --insecure-skip-tls-verify=true"
 						    
@@ -87,9 +86,8 @@ pipeline {
                             ARGOCD_ROUTE = sh(script:"oc -n openshift-gitops get route openshift-gitops-server -n openshift-gitops -o jsonpath='{.spec.host}'",returnStdout:true)
                             println ARGOCD_ROUTE
                             
-                        sh """
-                            									
-							              if [ \$(oc get project "${project_name}" | wc -l) -gt 0 ]; then
+                        sh """					
+			    if [ \$(oc get project "${project_name}" | wc -l) -gt 0 ]; then
                                 oc project $project_name
                             else
                               \"Project Not Found\"
@@ -124,11 +122,11 @@ pipeline {
                                 sh "argocd app sync ${project_name}"
                             }
 						
-					      }//cred
-					    }
-            }//for
-				  }//script
-			  }//steps
-		  }//stage
+		   }//cred
 		}
+             }//for
+	  }//script
+	}//steps
+     }//stage
+   }
 }
