@@ -13,9 +13,9 @@ pipeline {
             steps {
                 script {
                     if (!params.NAMESPACE.isEmpty()) { 
-						if (params.branch.isEmpty()) { error('Branch Field Empty') }
+			if (params.branch.isEmpty()) { error('Branch Field Empty') }
                     }
-					else { error('Project Area is Empty') }
+		     else { error('Project Area is Empty') }
                 }
             }
         }
