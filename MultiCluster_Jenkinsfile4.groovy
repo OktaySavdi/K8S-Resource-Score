@@ -123,7 +123,7 @@ pipeline {
                             }
 						
 		   }//cred
-		}
+		}//withCredentials
              }//for
 	  }//script
 	}//steps
