@@ -13,19 +13,19 @@ pipeline {
             steps {
                 script {
                     if (!params.NAMESPACE.isEmpty()) { 
-						if (params.REPO.isEmpty()) { 
+			if (params.REPO.isEmpty()) { 
                             
                             error('repo Space is Empty') 
                         }
                     }
-					else { error('Proje Space is Empty') }
+		     else { error('Proje Space is Empty') }
                 }
             }
         }
 		stage('action') {
 			steps {
 				script {
-				    def clusters = [
+		    def clusters = [
                         "https://api.mycluster1.mydomain:6443",
                         "https://api.mycluster2.mydomain:6443"
                         ]
@@ -99,7 +99,7 @@ pipeline {
                                 sh "argocd app sync ${project_name}"
                               }						
 	            }//cred
-		 }
+		 }//withCredentials
               }//for
 	  }//script
 	}//steps
