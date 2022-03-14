@@ -151,9 +151,9 @@ pipeline {
                                                     sh "argocd app sync ${app_name}"
                                                 }//else                                     
                                             }//else						
-				    }//cred
-			      }//withCredentials
-                          }//each
+				        }//cred
+			            }//withCredentials
+                                }//each
                            deleteDir()
                            cleanWs()
 		      }//script
