@@ -5,11 +5,11 @@ pipeline {
 	//Parameters
 	parameters {
 	    choice ( name: 'CLUSTERS', description: 'Enter the Cluster name to be installed', choices: ['my_app_cluster', 'my_web_cluster', 'my_db_cluster'] )
-        string ( name: 'NAMESPACE', description: 'Enter the Project name to be installed' )
-        string ( name: 'REPO', description: 'Enter the repo name' )
-        string ( name: 'APPNAME', description: 'Enter the Application name' )
-        choice ( name: 'Deploy', description: 'If it works in an active-passive structure, which cluster should be deployed?? ', choices: ['all', 'cluster_1', 'cluster_2'] )
-        string ( name: 'helm_install', description: 'If installing with Helm chart, please enter the name of the values file. EX: values.yml veya values2.yml' )
+            string ( name: 'NAMESPACE', description: 'Enter the Project name to be installed' )
+            string ( name: 'REPO', description: 'Enter the repo name' )
+            string ( name: 'APPNAME', description: 'Enter the Application name' )
+            choice ( name: 'Deploy', description: 'If it works in an active-passive structure, which cluster should be deployed?? ', choices: ['all', 'cluster_1', 'cluster_2'] )
+            string ( name: 'helm_install', description: 'If installing with Helm chart, please enter the name of the values file. EX: values.yml veya values2.yml' )
 	}
 
     environment { 
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     if (!params.NAMESPACE.isEmpty()) { 
-			           if (params.REPO.isEmpty()) { 
+		        if (params.REPO.isEmpty()) { 
                            error('repo Space is Empty') 
                         }
                     }else { error('Proje Space is Empty') }
@@ -54,14 +54,14 @@ pipeline {
                            repoUrl = "https://github.com/OktaySavdi/${params.REPO}.git"
                                                   
                            git branch: deploybranch, credentialsId: 'srv_gitops', url: "${repoUrl}"
-                            if ( "${helm_install}" == "" ){
-                                  check_val = sh(script: "kubeval --openshift *.y*l | grep -v \"PASS\" | wc -l",returnStdout:true)
-                                  println check_val
-                                  if( check_val.toInteger() > 0 ){
-                                     sh "kubeval --openshift *"
-                                     error("Please check your yaml file")
-                            }//if
-                       }//if            
+                           if ( "${helm_install}" == "" ){
+                              check_val = sh(script: "kubeval --openshift *.y*l | grep -v \"PASS\" | wc -l",returnStdout:true)
+                              println check_val
+                              if( check_val.toInteger() > 0 ){
+                                 sh "kubeval --openshift *"
+                                 error("Please check your yaml file")
+                              }//if
+                           }//if            
                 }//script
             }//steps  
         }//stage
@@ -69,95 +69,94 @@ pipeline {
 		stage('action') {
 			steps {
 				script {
-                        env."${CLUSTERS}".tokenize(",").each { cluster ->
+                                        env."${CLUSTERS}".tokenize(",").each { cluster ->
  				        git branch: deploybranch, credentialsId: 'srv_gitops', url: "${repoUrl}"
-                        cred_id = sh ( script: "echo ${cluster} | sed 's|https://\\(api\\.\\)\\?\\(.*\\)|\\2|' | awk -F '.' '{print \$1}' | tr '-' '_' | awk '{print \$0 \"_gitops\"}'",returnStdout:true)
+                                        cred_id = sh ( script: "echo ${cluster} | sed 's|https://\\(api\\.\\)\\?\\(.*\\)|\\2|' | awk -F '.' '{print \$1}' | tr '-' '_' | awk '{print \$0 \"_gitops\"}'",returnStdout:true)
 				        withCredentials([string(credentialsId: "${cred_id}", variable: 'TOKEN')]) {
 				            withCredentials([usernamePassword(credentialsId: 'srv_gitops', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 					
-                            sh "oc login --token ${TOKEN} ${cluster} --insecure-skip-tls-verify=true"
+                                            sh "oc login --token ${TOKEN} ${cluster} --insecure-skip-tls-verify=true"
 						    
-                            ARGOCD_SERVER_PASSWORD = sh(script: "oc get secret openshift-gitops-cluster -n openshift-gitops -o jsonpath='{.data.admin\\.password}' | base64 -d", returnStdout: true)
-                            project_name = NAMESPACE.toLowerCase()
-                            argocdrepourl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@gtgit.mydomain.com.tr/scm/gitops/${params.REPO}.git"
+                                            ARGOCD_SERVER_PASSWORD = sh(script: "oc get secret openshift-gitops-cluster -n openshift-gitops -o jsonpath='{.data.admin\\.password}' | base64 -d", returnStdout: true)
+                                            project_name = NAMESPACE.toLowerCase()
+                                            argocdrepourl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@gtgit.mydomain.com.tr/scm/gitops/${params.REPO}.git"
             
-                            if ( "${helm_install}" != "" ){
-                                sh(script: "cp -rf /opt/helm_charts/stable/deployment/ . ", returnStdout: true)
-                                score = sh(script: "polaris audit --helm-chart deployment --helm-values ${helm_install} --format score", returnStdout: true).readLines()[0]
-                            }else{
-                                score = sh(script: "polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . --format score", returnStdout: true).readLines()[0]
-                            }
-                            echo score
-                            ARGOCD_ROUTE = sh(script:"oc -n openshift-gitops get route openshift-gitops-server -n openshift-gitops -o jsonpath='{.spec.host}'",returnStdout:true)                           
+                                            if ( "${helm_install}" != "" ){
+                                                sh(script: "cp -rf /opt/helm_charts/stable/deployment/ . ", returnStdout: true)
+                                                score = sh(script: "polaris audit --helm-chart deployment --helm-values ${helm_install} --format score", returnStdout: true).readLines()[0]
+                                            }else{
+                                                score = sh(script: "polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . --format score", returnStdout: true).readLines()[0]
+                                            }
+                                            echo score
+                                            ARGOCD_ROUTE = sh(script:"oc -n openshift-gitops get route openshift-gitops-server -n openshift-gitops -o jsonpath='{.spec.host}'",returnStdout:true)                           
                             
-                            sh """
-                           							
-				             if [ \$(oc get project "${project_name}" | wc -l) -gt 0 ]; then
-                                 oc project $project_name
-                              else
-                                \"Project Not Found\"
-                                 exit 5
-                              fi
-                            """
+                                            sh """					
+			                      if [ \$(oc get project "${project_name}" | wc -l) -gt 0 ]; then
+                                                 oc project $project_name
+                                              else
+                                                \"Project Not Found\"
+                                                 exit 5
+                                              fi
+                                            """
                        
-                            if(score.toInteger() < 80){
-                                println "Your yaml file has the following deficiencies"
-                                if ( "${helm_install}" != "" ){
-                                     sh "polaris audit --helm-chart deployment --helm-values ${helm_install} | grep -A 0 -B 8 false | grep -vE \"Severity|Category|Details|true\" "
-                                     error("Please make the relevant changes in your Yaml file")
-                                }else{
-                                     sh "polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . | grep -A 0 -B 8 false | grep -vE \"Severity|Category|Details|true\" "
-                                     //kube-score score * --output-format ci | grep -vE "NetworkPolicy|podAntiAffinity|PodDisruptionBudget"
-                                     error("Please make the relevant changes in your Yaml file")
-                                }         
-                            }else{   
-                                argocdloginscript = """#!/bin/bash +x
-                                argocd --insecure --grpc-web login ${ARGOCD_ROUTE}:443 --username admin --password ${ARGOCD_SERVER_PASSWORD}"""
-                                 
-                                sh(script:argocdloginscript,returnStdout:false)
-                                 
-                                projectcountscript = """#!/bin/bash
-                                argocd app list | { grep -c ${project_name} || true; }
-                                """
-                                projectnumber = sh(script: projectcountscript,returnStdout:true).readLines()[0]
-                                 
-                                 
-                                println "projectnumber is $projectnumber"
-                            
-                                if(projectnumber == "0"){
-                                   if ( "${helm_install}" != "" ){
-                                       sh "argocd app create ${app_name} --helm-chart deployment --repo https://oktaysavdi.github.io/helm/charts/ --revision 0.1.0 --dest-namespace ${project_name} --dest-server https://kubernetes.default.svc --values-literal-file ${helm_install}"
-                                   }else{
-                                       sh "argocd app create ${app_name} --repo ${argocdrepourl} --path . --revision ${deploybranch} --project default --dest-namespace ${project_name} --dest-server https://kubernetes.default.svc --directory-recurse"
-                                   }                               
-                                }
-                                if ( Deploy != 'all') 
-                                {
-                                   if ( Deploy == 'cluster_1' && cluster =~ /(.*)1\.fw(.*)/ )
-                                   {
-                                     if ( "${helm_install}" != "" ){
-                                        sh "argocd app set ${app_name} --values-literal-file ${helm_install}"
-                                        sh "argocd app sync ${app_name}"
-                                     }else{
-                                        sh "argocd app sync ${app_name}"
-                                     }
-                                   }else if ( Deploy == 'cluster_2' && cluster =~ /(.*)2\.fw(.*)/)
-                                      if ( "${helm_install}" != "" ){
-                                        sh "argocd app set ${app_name} --values-literal-file ${helm_install}"
-                                        sh "argocd app sync ${app_name}"
-                                      }else{
-                                        sh "argocd app sync ${app_name}"
-                                      }
-                                }else{
-                                    sh "argocd app sync ${app_name}"
-                                }//else                                     
-                            }//else						
+                                            if(score.toInteger() < 80){
+                                                println "Your yaml file has the following deficiencies"
+                                                if ( "${helm_install}" != "" ){
+                                                     sh "polaris audit --helm-chart deployment --helm-values ${helm_install} | grep -A 0 -B 8 false | grep -vE \"Severity|Category|Details|true\" "
+                                                     error("Please make the relevant changes in your Yaml file")
+                                                }else{
+                                                     sh "polaris audit --config /opt/check_yaml_valiation/custom_check.yaml --audit-path . | grep -A 0 -B 8 false | grep -vE \"Severity|Category|Details|true\" "
+                                                     //kube-score score * --output-format ci | grep -vE "NetworkPolicy|podAntiAffinity|PodDisruptionBudget"
+                                                     error("Please make the relevant changes in your Yaml file")
+                                                }         
+                                            }else{   
+                                                argocdloginscript = """#!/bin/bash +x
+                                                argocd --insecure --grpc-web login ${ARGOCD_ROUTE}:443 --username admin --password ${ARGOCD_SERVER_PASSWORD}"""
+                                                 
+                                                sh(script:argocdloginscript,returnStdout:false)
+                                                 
+                                                projectcountscript = """#!/bin/bash
+                                                argocd app list | { grep -c ${project_name} || true; }
+                                                """
+                                                projectnumber = sh(script: projectcountscript,returnStdout:true).readLines()[0]
+                                                 
+                                                 
+                                                println "projectnumber is $projectnumber"
+                                            
+                                                if(projectnumber == "0"){
+                                                   if ( "${helm_install}" != "" ){
+                                                       sh "argocd app create ${app_name} --helm-chart deployment --repo https://oktaysavdi.github.io/helm/charts/ --revision 0.1.0 --dest-namespace ${project_name} --dest-server https://kubernetes.default.svc --values-literal-file ${helm_install}"
+                                                   }else{
+                                                       sh "argocd app create ${app_name} --repo ${argocdrepourl} --path . --revision ${deploybranch} --project default --dest-namespace ${project_name} --dest-server https://kubernetes.default.svc --directory-recurse"
+                                                   }                               
+                                                }
+                                                if ( Deploy != 'all') 
+                                                {
+                                                   if ( Deploy == 'cluster_1' && cluster =~ /(.*)1\.fw(.*)/ )
+                                                   {
+                                                     if ( "${helm_install}" != "" ){
+                                                        sh "argocd app set ${app_name} --values-literal-file ${helm_install}"
+                                                        sh "argocd app sync ${app_name}"
+                                                     }else{
+                                                        sh "argocd app sync ${app_name}"
+                                                     }
+                                                   }else if ( Deploy == 'cluster_2' && cluster =~ /(.*)2\.fw(.*)/)
+                                                      if ( "${helm_install}" != "" ){
+                                                        sh "argocd app set ${app_name} --values-literal-file ${helm_install}"
+                                                        sh "argocd app sync ${app_name}"
+                                                      }else{
+                                                        sh "argocd app sync ${app_name}"
+                                                      }
+                                                }else{
+                                                    sh "argocd app sync ${app_name}"
+                                                }//else                                     
+                                            }//else						
 				    }//cred
 			      }//withCredentials
-                }//each
-                deleteDir()
-                cleanWs()
-			  }//script
+                          }//each
+                           deleteDir()
+                           cleanWs()
+		      }//script
 		    }//steps
 		  }//stage
 		}
