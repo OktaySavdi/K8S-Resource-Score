@@ -81,7 +81,7 @@ pipeline {
                                sh "argocd app sync ${project_name}"
                             }
 						
-			}//cred
+		    }//cred
                   }//for
 		}//script
 	     }//steps
