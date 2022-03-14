@@ -126,7 +126,7 @@ pipeline {
                                          }
                                          else{
                                                sh "argocd app sync ${project_name}"
-                                         }
+                                         }//else
                                          
                                      }						
 				}//cred
