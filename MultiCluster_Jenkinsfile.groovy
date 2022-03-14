@@ -60,7 +60,7 @@ pipeline {
                                             argocd app sync "${project_name}"
                                         fi
 			               '''
-				}//cred
+				 }//cred
                              }//for
 			}//script
 		      }//steps
