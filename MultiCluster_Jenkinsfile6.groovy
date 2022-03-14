@@ -28,6 +28,7 @@ pipeline {
 	    stage('control') {
             steps {
                 script {
+		    cleanWs disableDeferredWipeout: true, deleteDirs: true
                     if (!params.NAMESPACE.isEmpty()) { 
 		        if (params.REPO.isEmpty()) { 
                            error('repo Space is Empty') 
@@ -154,8 +155,6 @@ pipeline {
 				        }//cred
 			            }//withCredentials
                                 }//each
-                           deleteDir()
-                           cleanWs()
 		      }//script
 		    }//steps
 		  }//stage
